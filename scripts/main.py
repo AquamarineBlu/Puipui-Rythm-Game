@@ -1,7 +1,7 @@
 import pygame
 from pygame import mixer
 import os
-import time
+
 pygame.init()
 mixer.init()
 
@@ -14,15 +14,15 @@ mixer.music.play()
 
 
 #screen constants
-WIDTH = 800
-HEIGTH = 600
+SCREEN_WIDTH = 800
+SCREEN_HEIGTH = 600
 
 #obj constants
 WIDTH_KEY = 50
-HEIGHT_KEY = 40
-SKEY_POS_Y = 500
-KEY_POS_Y = 0-HEIGHT_KEY
-KEY_POS_X = 300
+HEIGTH_KEY = 40
+POS_Y_SKEY = 500
+POS_Y_KEY = 0-HEIGTH_KEY
+POS_X_KEY = 300
 
 #other constants
 DELAY= 100
@@ -30,7 +30,7 @@ DELAY= 100
 #variables
 score = 0
 velocity = 3
-key_y= KEY_POS_Y
+bonus = 0
 
 #colors
 black = (0,0,0)
@@ -48,51 +48,72 @@ orange = (255, 130, 0)
 
 #class key
 class Key():
-    def __init__(self,x,y,color1, color2, key):
+    def __init__(self,x,y,color1, color2, key, column, heigth= HEIGTH_KEY, long = False):
         self.x = x
         self.y = y
         self.color1 = color1
         self.color2 = color2
         self.button= key
-        self.rect= pygame.Rect(self.x, self.y, WIDTH_KEY, HEIGHT_KEY)
+        self.column = column
+        self.heigth = heigth
+        self.long = long
+        self.rect= pygame.Rect(self.x, self.y, WIDTH_KEY, self.heigth)
 
+        #on touch key
         self.scored = False
         self.time_scored = 0
+        self.score_time = 0
 
-    # Nova função para atualizar a posição interna da nota
+        self.holding = False
+        self.end = False
+
     def update(self, vel):
-        self.y += vel
-        self.rect.y = self.y # Atualiza o retângulo físico para a colisão funcionar!
 
+        if self.holding:
+            self.rect.height -= vel
+            self.rect.y += vel
+            if self.rect.height <= HEIGTH_KEY:
+                self.end = True
+                self.holding = False
+        else:
+            self.y += vel
+            self.rect.y = self.y
+
+    def clone(self, heigth, long:bool):
+        y_inicial = -heigth if long else self.y
+        return Key(self.x, y_inicial, self.color1, self.color2, self.button, self.column, heigth, long)
 
 #keys
 skeys = [
-    Key(KEY_POS_X+  100, SKEY_POS_Y,magenta, red, pygame.K_a),
-    Key(KEY_POS_X+  200, SKEY_POS_Y,cyan, blue, pygame.K_s),
-    Key(KEY_POS_X+  300, SKEY_POS_Y, green, strong_green, pygame.K_w),
-    Key(KEY_POS_X+  400, SKEY_POS_Y,yellow, orange, pygame.K_d),]
+    Key(POS_X_KEY+  100, POS_Y_SKEY,magenta, red, pygame.K_a, 1),
+    Key(POS_X_KEY+  200, POS_Y_SKEY,cyan, blue, pygame.K_s, 2),
+    Key(POS_X_KEY+  300, POS_Y_SKEY, green, strong_green, pygame.K_w, 3),
+    Key(POS_X_KEY+  400, POS_Y_SKEY,yellow, orange, pygame.K_d, 4),]
 
 keys = [
-    Key(KEY_POS_X+  100, KEY_POS_Y,magenta, red, pygame.K_a),
-    Key(KEY_POS_X+  200, KEY_POS_Y,cyan, blue, pygame.K_s),
-    Key(KEY_POS_X+  300, KEY_POS_Y, green, strong_green, pygame.K_w),
-    Key(KEY_POS_X+  400, KEY_POS_Y,yellow, orange, pygame.K_d),]
+    Key(POS_X_KEY+  100, POS_Y_KEY,magenta, red, pygame.K_a, 1),
+    Key(POS_X_KEY+  200, POS_Y_KEY,cyan, blue, pygame.K_s, 2),
+    Key(POS_X_KEY+  300, POS_Y_KEY, green, strong_green, pygame.K_w, 3),
+    Key(POS_X_KEY+  400, POS_Y_KEY,yellow, orange, pygame.K_d, 4),]
+keys_array=[]
 
-
+#beat_map
+beat_map=[(1,1, 200, True),(200,2,200, True),(300,3, HEIGTH_KEY,False),(400,4,HEIGTH_KEY, False)]
 
 #starters
-screen = pygame.display.set_mode((WIDTH,HEIGTH))
+screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGTH))
 pygame.display.set_caption('Meu jogo')
 clock = pygame.time.Clock()
 start_clock = pygame.time.get_ticks()
-font = pygame.font.Font('freesansbold.ttf', 32)
+font = pygame.font.Font(None, 32)
 
 
 #game loop(main)
 running = True
 while running:
+    #starters
     screen.fill(black)
-
+    pressed = pygame.key.get_pressed()
     actual_time = pygame.time.get_ticks() - start_clock
 
     #eventos
@@ -101,47 +122,68 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            for key in keys[:]:
+            for key in keys_array[:]:
                 if event.key == key.button:
                     for skey in skeys:
-                        if skey.button == key.button and key.rect.colliderect(skey.rect):
-                            score += 100
-                            key.scored = True
-                            key.time_scored = actual_time
-                            break
+                        if skey.column == key.column and key.rect.colliderect(skey.rect):
+                            if key.long and key.rect.bottom<=skey.rect.bottom:
+                                key.holding= True
+                                key.score_time = actual_time
+                                score+=20
+                            elif not key.long:
+                                score += 100
+                                key.scored = True
+                                key.time_scored = actual_time
+                                break
+        if event.type ==pygame.KEYUP:
+                for key in keys_array:
+                    if event.key == key.button and key.holding:
+                        key.holding = False
 
     #keys
-    pressed = pygame.key.get_pressed()
 
     for key in skeys:
         pygame.draw.rect(screen, key.color1, key.rect)
+    
+    
+    for key_map in beat_map[:]:
+        time_key, column_key, heigth_key, long_key= key_map
+        if abs(actual_time-time_key) <10:
+            for key in keys[:]:
+                if key.column==column_key:
+                    keys_array.append(key.clone(heigth_key, long_key))
+                    beat_map.remove(key_map)
+                    break
 
-    for key in keys[:]:
+    for key in keys_array[:]:
         key.update(velocity)
 
-
         color = key.color2 if pressed[key.button] else key.color1
-        pygame.draw.rect(screen, color, key.rect)
-        
-        if key.y > HEIGTH:
-            keys.remove(key)
-        if key.scored:
-            if actual_time - key.time_scored >= DELAY:
-                keys.remove(key)
-                key.scored = False
+
+        if not key.end:
+            pygame.draw.rect(screen, color, key.rect)
+
+        if key.holding and actual_time - key.score_time >= 100:
+            score += 10
+            key.score_time = actual_time
+
+        if key.long and key.end:
+            score += 50
+            keys_array.remove(key)
 
 
-
-    # for key in keys:
-    #     key_y+= velocity
-    #     pygame.draw.rect(screen, key.color2, (key.x, key_y, WIDTH_KEY, HEIGHT_KEY))
-    #     for skey in skeys:
-    #         if key.colliderect(skey.rect):
-    #             score+=1
+        else:
+            if key.scored:
+                if actual_time - key.time_scored >= DELAY:
+                    keys_array.remove(key)
+            elif key.y > SCREEN_HEIGTH:
+                keys_array.remove(key)
 
     #score
     text_score = font.render(f"Pontos: {score}", False, white)
     screen.blit(text_score, (20, 20))
+    text_bonus = font.render(f"bonus: {bonus}X", False, white)
+    screen.blit(text_bonus, (SCREEN_WIDTH - text_bonus.get_width() - 20, 20))
 
     #update
     pygame.display.flip()
@@ -151,4 +193,3 @@ while running:
 
 pygame.quit()
 quit()
-
