@@ -4,7 +4,8 @@ import os
 pygame.init()
 mixer.init()
 
-#folders
+
+#music
 base_path = os.path.dirname(__file__)
 song_path = os.path.join(base_path, "..", "sounds", "song1.wav")
 song = mixer.music.load(song_path)
@@ -15,8 +16,14 @@ WIDTH = 800
 HEIGTH = 600
 WIDTH_KEY = 50
 HEIGHT_KEY = 20
-KEY_POSITION_y = 500
-KEY_POSITION_X = 300
+SKEY_POS_Y = 500
+KEY_POS_Y = 0-HEIGHT_KEY
+KEY_POS_X = 300
+
+#variables
+score = 0
+velocity = 0.5
+key_y= KEY_POS_Y
 
 #colors
 black = (0,0,0)
@@ -31,6 +38,7 @@ magenta= (255,0,255)
 cyan = (0,255,255)
 orange = (255, 130, 0)
 
+#classes
 class Key():
     def __init__(self,x,y,color1, color2, key):
         self.x = x
@@ -40,20 +48,34 @@ class Key():
         self.key= key
         self.rect= pygame.Rect(self.x, self.y, WIDTH_KEY, HEIGHT_KEY)
 
-keys = [
-    Key(KEY_POSITION_X+  100, KEY_POSITION_y,magenta, red, pygame.K_a),
-    Key(KEY_POSITION_X+  200, KEY_POSITION_y,cyan, blue, pygame.K_s),
-    Key(KEY_POSITION_X+  300, KEY_POSITION_y, green, strong_green, pygame.K_d),
-    Key(KEY_POSITION_X+  400, KEY_POSITION_y,yellow, orange, pygame.K_w),]
+skeys = [
+    Key(KEY_POS_X+  100, SKEY_POS_Y,magenta, red, pygame.K_a),
+    Key(KEY_POS_X+  200, SKEY_POS_Y,cyan, blue, pygame.K_s),
+    Key(KEY_POS_X+  300, SKEY_POS_Y, green, strong_green, pygame.K_w),
+    Key(KEY_POS_X+  400, SKEY_POS_Y,yellow, orange, pygame.K_d),]
 
+keys = [
+    Key(KEY_POS_X+  100, KEY_POS_Y,magenta, red, pygame.K_a),
+    Key(KEY_POS_X+  200, KEY_POS_Y,cyan, blue, pygame.K_s),
+    Key(KEY_POS_X+  300, KEY_POS_Y, green, strong_green, pygame.K_w),
+    Key(KEY_POS_X+  400, KEY_POS_Y,yellow, orange, pygame.K_d),]
+
+
+
+#starters
 screen = pygame.display.set_mode((WIDTH,HEIGTH))
 pygame.display.set_caption('Meu jogo')
 clock = pygame.time.Clock()
+start_clock = pygame.time.get_ticks()
+font = pygame.font.Font('freesansbold.ttf', 32)
 
+
+#game loop(main)
 running = True
-
 while running:
     screen.fill(black)
+
+    time = pygame.time.get_ticks() - start_clock
 
     #eventos
     for event in pygame.event.get():
@@ -62,11 +84,24 @@ while running:
 
     #testando
     pressed = pygame.key.get_pressed()
+    for key in skeys:
+        pygame.draw.rect(screen, key.color1, key.rect)
+
     for key in keys:
-        if pressed[key.key]:
-            pygame.draw.rect(screen, key.color2, key.rect)
+        key_y+= velocity
+
+        if not pressed[key.key]:
+            pygame.draw.rect(screen, key.color1, (key.x, key_y, WIDTH_KEY, HEIGHT_KEY))
         else:
-            pygame.draw.rect(screen, key.color1, key.rect)
+            pygame.draw.rect(screen, key.color2, (key.x, key_y, WIDTH_KEY, HEIGHT_KEY))
+            for skey in skeys:
+                if key.colliderect(skey.rect):
+                    score+=1 #  ajeitar isso daqui ########################################
+
+
+    #score
+    text_score = font.render(f"Pontos: {score}", False, white)
+    screen.blit(text_score, (20, 20))
 
     #update
     pygame.display.flip()

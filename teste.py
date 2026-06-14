@@ -61,7 +61,7 @@ while rodando:
                     tempo_nota, faixa_nota = nota
                     if faixa_nota == faixa_pressionada:
                         # Margem de erro de 100 milissegundos para mais ou para menos
-                        if abs(tempo_atual - tempo_nota) < 100:
+                        if abs(tempo_atual-tempo_nota) < 100:
                             pontuacao += 100
                             NOTAS_MAPA.remove(nota)
                             break
