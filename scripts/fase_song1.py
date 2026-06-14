@@ -11,7 +11,7 @@ pygame.init()
 mixer.init()
 
 #starters
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Meu jogo - Fase 1')
 clock = pygame.time.Clock()
 start_clock = pygame.time.get_ticks()
@@ -54,7 +54,7 @@ keys = [
 keys_array = []
 
 #map
-beat_map = [(1, 1, 400, True), (300, 4, 400, True),(500, 2, 400, True)]
+beat_map = [(1, 1, HEIGHT_KEY, False), (300, 4, 400, True),(500, 2, 400, True)]
 
 
 # game loop (main)
@@ -82,8 +82,14 @@ while running:
                             if key.long and key.rect.bottom <= skey.rect.bottom:
                                 key.holding = True
                                 key.next_score = actual_time
-                                score += 20
+                                score += 30
                                 bonus += 0.1
+                            elif key.long:
+                                key.holding = True
+                                key.next_score = actual_time
+                                score += 10
+                                key.y = key.rect.y
+                                key.rect.height -= key.rect.bottom-skey.rect.bottom
                             elif not key.long:
                                 score += 100
                                 key.scored = True
@@ -94,7 +100,7 @@ while running:
             for key in keys_array:
                 if event.key == key.button and key.holding:
                     key.holding = False
-
+                    key.y = key.rect.y
     #keys
     for key in skeys:
         pygame.draw.rect(screen, key.color1, key.rect)
@@ -147,7 +153,7 @@ while running:
                 if score >= 50:
                     score -= 50
                 key.missed = True
-            if key.rect.top > SCREEN_HEIGTH:
+            if key.rect.top > SCREEN_HEIGHT:
                 keys_array.remove(key)
 
         #score long

@@ -1,13 +1,13 @@
 
 # screen constants
 SCREEN_WIDTH = 800
-SCREEN_HEIGTH = 600
+SCREEN_HEIGHT = 600
 
 # obj constants
 WIDTH_KEY = 50
-HEIGTH_KEY = 50
+HEIGHT_KEY = 50
 POS_Y_SKEY = 500
-POS_Y_KEY = 0 - HEIGTH_KEY
+POS_Y_KEY = 0 - HEIGHT_KEY
 POS_X_KEY = 300
 
 # other constants
