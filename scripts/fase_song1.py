@@ -11,11 +11,15 @@ pygame.init()
 mixer.init()
 
 #starters
+    #screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+background = pygame.image.load(background_path)
+
 pygame.display.set_caption('Meu jogo - Fase 1')
 clock = pygame.time.Clock()
 start_clock = pygame.time.get_ticks()
 font = pygame.font.Font(None, 50)
+font2 = pygame.font.Font(None, size_font)
 
 # music
 mixer.music.load(song_path)
@@ -55,6 +59,7 @@ while running:
 
     #starters
     screen.fill(black)
+    screen.blit(background, (0, 0))
     pressed = pygame.key.get_pressed()
     actual_time = pygame.time.get_ticks() - start_clock
     
@@ -71,22 +76,24 @@ while running:
                 if event.key == key.button:
                     for skey in skeys:
                         if skey.column == key.column and key.rect.colliderect(skey.rect):
+                            #start key long
                             if key.long and key.rect.bottom <= skey.rect.bottom:
                                 key.holding = True
                                 key.next_score = actual_time
                                 bonus += 0.1
-                                score += int(30*bonus)
+                                score += int(40*(bonus if bonus>=1 else 1))
+                            #start mid key long
                             elif key.long:
                                 key.holding = True
                                 key.next_score = actual_time
-                                score += int(10*bonus)
                                 key.y = key.rect.y
                                 key.rect.height -= key.rect.bottom-skey.rect.bottom
+                                score += int(20*(bonus if bonus>=1 else 1))
                             elif not key.long:
-                                score += int(100*bonus)
                                 key.scored = True
                                 key.time_scored = actual_time
                                 bonus += 0.1
+                                score += int(100*(bonus if bonus>=1 else 1))
                                 
         if event.type == pygame.KEYUP:
             for key in keys_array:
@@ -111,8 +118,11 @@ while running:
     #keys
     for key in keys_array[:]:
         key.update(velocity)
-        color = key.color2 if pressed[key.button] else key.color1
 
+
+        color = key.color2 if pressed[key.button] else key.color1
+    
+    
         if not key.end:
             if key.long:
                 # Notas longas continuam desenhadas por código (fácil de encolher)
@@ -131,10 +141,10 @@ while running:
                     # Fallback de segurança (desenha o rect se as imagens falharem)
                     pygame.draw.rect(screen, color, key.rect)
 
-
+        #end key
         if key.long and key.end:
-            score += int(50*bonus)
-            bonus += 0.2
+            bonus += 0.1
+            score += int(60*(bonus if bonus>=1 else 1))
             keys_array.remove(key)
         elif not key.long and key.scored:
             if actual_time - key.time_scored >= DELAY:
@@ -150,8 +160,8 @@ while running:
                 keys_array.remove(key)
 
         #score long
-        if key.holding and actual_time - key.next_score >= 100:
-            score += int(5*bonus)
+        if key.holding and actual_time - key.next_score >= 300:
+            score += int(10*(bonus if bonus>=1 else 1))
             key.next_score = actual_time
 
     #time_screen
@@ -166,14 +176,17 @@ while running:
 
     if bonus <1.5:
         color_text = white
+        size_font=50
     elif bonus <2.0:
-        color_text = magenta
+        color_text = red
+        size_font=75
     else:
-        color_text = cyan
+        color_text = blue
+        size_font=100
         
     if bonus>1:
         screen.blit(text_bonus, (SCREEN_WIDTH - text_bonus.get_width() - 40, 20))
-    text_bonus = font.render(f"{(bonus if bonus>1 else 0):.1f}X", False, color_text)
+    text_bonus = font2.render(f"{(bonus if bonus>1 else 0):.1f}X", False, color_text)
 
 
     #update
