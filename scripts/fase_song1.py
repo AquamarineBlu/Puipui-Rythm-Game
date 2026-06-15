@@ -31,18 +31,13 @@ strong_green_key = pygame.image.load(seta_verde).convert_alpha()
 yellow_key = pygame.image.load(seta_amarela_claro).convert_alpha()
 strong_yellow_key = pygame.image.load(seta_amarela).convert_alpha()
 
-# variables
-score = 0
-velocity = 1
-acceleration = 0.001
-bonus = 0
 
 # keys
 skeys = [
-    Key(POS_X_KEY + 100, POS_Y_SKEY, magenta, red, pygame.K_a, 1),
-    Key(POS_X_KEY + 200, POS_Y_SKEY, cyan, blue, pygame.K_s, 2),
-    Key(POS_X_KEY + 300, POS_Y_SKEY, green, strong_green, pygame.K_w, 3),
-    Key(POS_X_KEY + 400, POS_Y_SKEY, yellow, orange, pygame.K_d, 4),
+    Key(POS_X_KEY + 100, POS_Y_SKEY, magenta, red, pygame.K_a, 1, sprite1=pink_key),
+    Key(POS_X_KEY + 200, POS_Y_SKEY, cyan, blue, pygame.K_s, 2, sprite1=blue_key),
+    Key(POS_X_KEY + 300, POS_Y_SKEY, green, strong_green, pygame.K_w, 3, sprite1=green_key),
+    Key(POS_X_KEY + 400, POS_Y_SKEY, yellow, orange, pygame.K_d, 4, sprite1=yellow_key),
 ]
 
 keys = [
@@ -52,9 +47,6 @@ keys = [
     Key(POS_X_KEY + 400, POS_Y_KEY, yellow, orange, pygame.K_d, 4, sprite1=yellow_key, sprite2=strong_yellow_key),
 ]
 keys_array = []
-
-#map
-beat_map = [(1, 1, HEIGHT_KEY, False), (300, 4, 400, True),(500, 2, 400, True)]
 
 
 # game loop (main)
@@ -101,9 +93,10 @@ while running:
                 if event.key == key.button and key.holding:
                     key.holding = False
                     key.y = key.rect.y
-    #keys
+    #skeys
     for key in skeys:
         pygame.draw.rect(screen, key.color1, key.rect)
+        screen.blit(key.sprite1, (key.rect.x, key.rect.y))
     
     #map
     for key_map in beat_map[:]:
@@ -158,8 +151,14 @@ while running:
 
         #score long
         if key.holding and actual_time - key.next_score >= 100:
-            score += 10
+            score += 5
             key.next_score = actual_time
+
+    #time_screen
+    pygame.draw.rect(screen, cyan, (ts_pos_x, ts_pos_y,ts_width ,ts_height))
+    pygame.draw.rect(screen, magenta, (ts_pos_x, ts_pos_y,time_screen ,ts_height))
+    if actual_time<=82005:
+        time_screen= actual_time/divider
 
     #score
     text_score = font.render(f"Pontos: {int(score*(bonus if bonus>1 else 1))}", False, white)

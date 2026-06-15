@@ -14,4 +14,4 @@ seta_verde = os.path.abspath(os.path.join(base_path, "..", "assets", "seta-verde
 seta_amarela_claro = os.path.abspath(os.path.join(base_path, "..", "assets", "seta-amarelo-claro.png"))
 seta_amarela = os.path.abspath(os.path.join(base_path, "..", "assets", "seta-amarelo.png"))
 
-print(seta_rosa_claro)
+
