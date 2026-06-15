@@ -1,6 +1,7 @@
 # fase1.py
 import pygame
 from pygame import mixer
+import json
 
 #my files
 from config import *
@@ -9,6 +10,8 @@ from paths import *
 
 pygame.init()
 mixer.init()
+with open("scripts/map1.json", "r") as archive:
+        beat_map = json.load(archive)
 
 #starters
     #screen
@@ -94,12 +97,36 @@ while running:
                                 key.time_scored = actual_time
                                 bonus += 0.1
                                 score += int(100*(bonus if bonus>=1 else 1))
-                                
+        #on keyup                
         if event.type == pygame.KEYUP:
             for key in keys_array:
                 if event.key == key.button and key.holding:
                     key.holding = False
                     key.y = key.rect.y
+
+        #restart
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                score = 0
+                bonus = 0.4
+                velocity = 1
+                time_screen = 1
+                
+                keys_array.clear()
+                keys = [
+                    Key(POS_X_KEY + 100, POS_Y_KEY, magenta, red, pygame.K_a, 1, sprite1=pink_key, sprite2=strong_pink_key),
+                    Key(POS_X_KEY + 200, POS_Y_KEY, cyan, blue, pygame.K_s, 2, sprite1=blue_key, sprite2=strong_blue_key),
+                    Key(POS_X_KEY + 300, POS_Y_KEY, green, strong_green, pygame.K_w, 3, sprite1=green_key, sprite2=strong_green_key),
+                    Key(POS_X_KEY + 400, POS_Y_KEY, yellow, orange, pygame.K_d, 4, sprite1=yellow_key, sprite2=strong_yellow_key),
+                ]
+                
+                with open("scripts/map1.json", "r") as arquivo:
+                    beat_map = json.load(arquivo)
+                
+                mixer.music.play()
+                start_clock = pygame.time.get_ticks()
+                actual_time = 0
+                continue
     #skeys
     for key in skeys:
         pygame.draw.rect(screen, key.color1, key.rect)

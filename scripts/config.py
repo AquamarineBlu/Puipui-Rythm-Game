@@ -27,12 +27,12 @@ cyan = (41, 173, 255)
 orange = (255, 163, 0)
 
 #map
-beat_map = [(1, 1, HEIGHT_KEY, False), (1000, 4, 200, True),(3000, 2, 400, True),
-            (9000, 1, HEIGHT_KEY, False),(9000, 2, HEIGHT_KEY, False), (11000, 3, HEIGHT_KEY, False),(11500, 4, HEIGHT_KEY, False),
-            (12000, 4, HEIGHT_KEY, False),(12500, 3, HEIGHT_KEY, False),(13000, 2, HEIGHT_KEY, False),(13500, 1, 400, True),
-            (15000, 2, HEIGHT_KEY, False),(15500, 3, HEIGHT_KEY, False),(16000, 2, HEIGHT_KEY, False),(16500, 4, HEIGHT_KEY, False),
-            (17000, 1, 300, True)
-            ]
+# beat_map = [(1, 1, HEIGHT_KEY, False), (1000, 4, 200, True),(3000, 2, 400, True),
+#             (9000, 1, HEIGHT_KEY, False),(9000, 2, HEIGHT_KEY, False), (11000, 3, HEIGHT_KEY, False),(11500, 4, HEIGHT_KEY, False),
+#             (12000, 4, HEIGHT_KEY, False),(12500, 3, HEIGHT_KEY, False),(13000, 2, HEIGHT_KEY, False),(13500, 1, 400, True),
+#             (15000, 2, HEIGHT_KEY, False),(15500, 3, HEIGHT_KEY, False),(16000, 2, HEIGHT_KEY, False),(16500, 4, HEIGHT_KEY, False),
+#             (17000, 1, 300, True)
+#             ]
 
 # variables
 score = 0
