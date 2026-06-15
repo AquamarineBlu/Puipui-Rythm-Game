@@ -74,16 +74,16 @@ while running:
                             if key.long and key.rect.bottom <= skey.rect.bottom:
                                 key.holding = True
                                 key.next_score = actual_time
-                                score += 30
                                 bonus += 0.1
+                                score += int(30*bonus)
                             elif key.long:
                                 key.holding = True
                                 key.next_score = actual_time
-                                score += 10
+                                score += int(10*bonus)
                                 key.y = key.rect.y
                                 key.rect.height -= key.rect.bottom-skey.rect.bottom
                             elif not key.long:
-                                score += 100
+                                score += int(100*bonus)
                                 key.scored = True
                                 key.time_scored = actual_time
                                 bonus += 0.1
@@ -133,7 +133,7 @@ while running:
 
 
         if key.long and key.end:
-            score += 50
+            score += int(50*bonus)
             bonus += 0.2
             keys_array.remove(key)
         elif not key.long and key.scored:
@@ -151,7 +151,7 @@ while running:
 
         #score long
         if key.holding and actual_time - key.next_score >= 100:
-            score += 5
+            score += int(5*bonus)
             key.next_score = actual_time
 
     #time_screen
@@ -161,12 +161,19 @@ while running:
         time_screen= actual_time/divider
 
     #score
-    text_score = font.render(f"Pontos: {int(score*(bonus if bonus>1 else 1))}", False, white)
+    text_score = font.render(f"Pontos: {int(score)}", False, white)
     screen.blit(text_score, (40, 20))
 
+    if bonus <1.5:
+        color_text = white
+    elif bonus <2.0:
+        color_text = magenta
+    else:
+        color_text = cyan
+        
     if bonus>1:
         screen.blit(text_bonus, (SCREEN_WIDTH - text_bonus.get_width() - 40, 20))
-    text_bonus = font.render(f"{(bonus if bonus>1 else 0):.1f}X", False, white)
+    text_bonus = font.render(f"{(bonus if bonus>1 else 0):.1f}X", False, color_text)
 
 
     #update
