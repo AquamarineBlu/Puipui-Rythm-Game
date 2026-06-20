@@ -19,7 +19,7 @@ class Key():
         self.scored = False
         self.time_scored = 0
         self.next_score = 0
-        self.missed = False
+        self.check_missed = False
 
         self.holding = False
         self.end = False

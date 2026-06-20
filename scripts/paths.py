@@ -1,9 +1,11 @@
 import pygame
 import os
 
-#songs
 base_path = os.path.dirname(__file__)
+
+#songs
 song_path = os.path.join(base_path, "..", "sounds", "song1.wav")
+song_menu_path = os.path.join(base_path, "..", "sounds", "song2.wav")
 
 #keys
 seta_rosa_claro = os.path.abspath(os.path.join(base_path, "..", "assets", "seta-rosa-claro.png"))
@@ -17,4 +19,16 @@ seta_amarela = os.path.abspath(os.path.join(base_path, "..", "assets", "seta-ama
 
 #background
 background_path = os.path.join(base_path, "..", "assets", "music_store.png")
-background = pygame.image.load(background_path)
+
+#menu
+puipui_path = os.path.abspath(os.path.join(base_path, "..", "assets", "puipui.png"))
+dark_puipui_path = os.path.abspath(os.path.join(base_path, "..", "assets", "darkpuipui.png"))
+
+play_path = os.path.abspath(os.path.join(base_path, "..", "assets", "play.png"))
+plays_path = os.path.abspath(os.path.join(base_path, "..", "assets", "plays.png"))
+
+score_path = os.path.abspath(os.path.join(base_path, "..", "assets", "score.png"))
+scores_path = os.path.abspath(os.path.join(base_path, "..", "assets", "scores.png"))
+
+credito_path = os.path.abspath(os.path.join(base_path, "..", "assets", "credito.png"))
+creditos_path = os.path.abspath(os.path.join(base_path, "..", "assets", "creditos.png"))
