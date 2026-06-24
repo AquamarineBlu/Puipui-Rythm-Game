@@ -56,4 +56,4 @@ puipui_time = True
 old_time=0
 
 #placar
-placar = []
+placar = [12439, 5845, 500, 4637, 2, 90]

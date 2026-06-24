@@ -27,27 +27,27 @@ def fase_score():
         screen.blit(text, (SCREEN_WIDTH/2-text.get_width()/2, 50))
 
         if len(placar)>0:
-            score0 = font.render(f"{placar[0]}", False, blue)
+            score0 = font.render(f"1: {placar[0]}", False, blue)
             screen.blit(score0, (SCREEN_WIDTH/2-score0.get_width()/2, 180))
 
         if len(placar)>1:
-            score1 = font.render(f"{placar[1]}", False, blue)
+            score1 = font.render(f"2: {placar[1]}", False, blue)
             screen.blit(score1, (SCREEN_WIDTH/2-score1.get_width()/2, 250))
 
         if len(placar)>2:
-            score2 = font.render(f"{placar[2]}", False, blue)
+            score2 = font.render(f"3: {placar[2]}", False, blue)
             screen.blit(score2, (SCREEN_WIDTH/2-score2.get_width()/2, 320))
 
         if len(placar)>3:
-            score3 = font.render(f"{placar[3]}", False, blue)
+            score3 = font.render(f"4: {placar[3]}", False, blue)
             screen.blit(score3, (SCREEN_WIDTH/2-score3.get_width()/2, 390))
 
         if len(placar)>4:
-            score4 = font.render(f"{placar[4]}", False, blue)
+            score4 = font.render(f"5: {placar[4]}", False, blue)
             screen.blit(score4, (SCREEN_WIDTH/2-score4.get_width()/2, 460))
 
         if len(placar)>5:
-            score5 = font.render(f"{placar[5]}", False, blue)
+            score5 = font.render(f"6: {placar[5]}", False, blue)
             screen.blit(score5, (SCREEN_WIDTH/2-score5.get_width()/2, 530))
 
         for event in pygame.event.get():

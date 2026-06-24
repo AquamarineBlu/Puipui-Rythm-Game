@@ -1,4 +1,3 @@
-# fase_song1.py
 import pygame
 import json
 import config
@@ -67,6 +66,7 @@ def fase_song():
         Key(POS_X_KEY + 400, POS_Y_KEY, yellow, orange, pygame.K_d, 4, sprite1=yellow_key, sprite2=strong_yellow_key),
     ]
     keys_array = []
+    
     # game loop (main)
     running = True
     while running:
@@ -111,8 +111,8 @@ def fase_song():
             text_exit = font.render("Pressione ESC para o Menu", False, white)
             screen.blit(text_exit, (SCREEN_WIDTH/2-text_exit.get_width()/2, SCREEN_HEIGHT/2 + 100))
 
-            if len(placar)>0:
-                if score> placar[0]:
+            if len(config.placar)>0:
+                if config.score> config.placar[0]:
                     text_record = font_placar.render("NOVO RECORDE!", False, magenta)
                     screen.blit(text_record, (SCREEN_WIDTH/2-text_record.get_width()/2, SCREEN_HEIGHT/2-text_record.get_height()/2-150))
             else:
@@ -121,11 +121,11 @@ def fase_song():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    config.placar.append(score)
+                    config.placar.append(config.score)
                     running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        config.placar.append(score)
+                        config.placar.append(config.score)
                         running = False
                         
             pygame.display.flip()
@@ -211,33 +211,30 @@ def fase_song():
         # keys
         for key in keys_array[:]:
             key.update(config.velocity)
+
+            #change color keys
             color = key.color2 if pressed[key.button] else key.color1
+            sprite_atual = key.sprite2 if pressed[key.button] else key.sprite1
         
             #draw the key in the screen
             if not key.end:
+
                 if key.long:
                     pygame.draw.rect(screen, color, key.rect)
                 else:
-                    if pressed[key.button]:
-                        sprite_atual = key.sprite2
-                    else:
-                        sprite_atual = key.sprite1
+                    screen.blit(sprite_atual, (key.rect.x, key.rect.y))
 
-                    if sprite_atual:
-                        screen.blit(sprite_atual, (key.rect.x, key.rect.y))
-                    else:
-                        pygame.draw.rect(screen, color, key.rect)
-
-            #scored key long (remove)
+            #scored keys and remove
             if key.long and key.end:
                 config.bonus += 0.1
                 config.score += int(60*(config.bonus if config.bonus>=1 else 1))
                 keys_array.remove(key)
+
             elif not key.long and key.scored:
                 if actual_time - key.time_scored >= DELAY:
                     keys_array.remove(key)
 
-            #loose points
+            #loose points and remove
             if not key.scored and key.rect.top > skeys[0].rect.bottom:
                 if not key.check_missed:
                     config.bonus = 0.4
